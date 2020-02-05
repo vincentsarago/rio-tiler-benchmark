@@ -44,6 +44,9 @@ def cloudoptimized_geotiff():
         if os.path.exists(fout):
             return fout
 
+        if not os.path.isdir(output_dir):
+            os.mkdir(output_dir, parents=True)
+
         profile_options = {"blockxsize": tilesize, "blockysize": tilesize}
         output_profile = cog_profiles.get("deflate")
         output_profile.update(profile_options)
