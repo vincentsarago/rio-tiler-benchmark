@@ -48,7 +48,7 @@ jobs:
           --benchmark-columns 'min, max, mean, median' \
           --benchmark-sort 'min' \
           --benchmark-name 'short' \
-          --benchmark-storage 'reports/' \
+          --benchmark-storage 'reports/'
 
   # compare:
   #   docker:
