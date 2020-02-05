@@ -38,9 +38,7 @@ jobs:
     docker:
       - image: circleci/python:3.7.2
     working_directory: ~/benchmark
-    steps:
-      - attach_workspace:
-          at: ~/benchmark  
+    steps: 
       - checkout
       - run: pip install -e .[test] --user
       - run: |
@@ -51,12 +49,6 @@ jobs:
           --benchmark-sort 'min' \
           --benchmark-name 'short' \
           --benchmark-storage 'reports/' \
-          --benchmark-compare \
-            --benchmark-compare-fail 'min:5%'
-      - persist_to_workspace:
-          root: reports/
-          paths:
-            - *
 
   # compare:
   #   docker:
