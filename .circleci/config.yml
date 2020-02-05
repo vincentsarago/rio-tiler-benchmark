@@ -52,12 +52,11 @@ jobs:
           --benchmark-name 'short' \
           --benchmark-storage 'reports/' \
           --benchmark-compare \
-          --benchmark-compare-fail 'min:5%'
-
-    - persist_to_workspace:
-        root: reports/
-        paths:
-          - *
+            --benchmark-compare-fail 'min:5%'
+      - persist_to_workspace:
+          root: reports/
+          paths:
+            - *
 
   # compare:
   #   docker:
