@@ -27,7 +27,6 @@ requires_webp = pytest.mark.skipif(
 @pytest.fixture
 def cloudoptimized_geotiff():
     """Create CloudOptimized GeoTIFF fixture."""
-
     def _cloudoptimized_geotiff(
         output_dir,
         name,
@@ -45,7 +44,7 @@ def cloudoptimized_geotiff():
             return fout
 
         if not os.path.isdir(output_dir):
-            os.mkdir(output_dir, parents=True)
+            os.makedirs(output_dir)
 
         profile_options = {"blockxsize": tilesize, "blockysize": tilesize}
         output_profile = cog_profiles.get("deflate")
