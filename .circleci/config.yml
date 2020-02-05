@@ -1,0 +1,79 @@
+version: 2
+common: &common
+  working_directory: ~/benchmark
+  steps:
+    - run: apk add git
+    - checkout
+    - run: pip3 install -e .[test]
+    - run: |
+        python3 -m pytest \
+          --benchmark-only \
+          --benchmark-autosave \
+          --benchmark-columns 'min, max, mean, median' \
+          --benchmark-sort 'min' \
+
+jobs:
+  gdalmaster:
+    <<: *common
+    docker:
+      - image: remotepixel/alpine-rasterio:gdalmaster
+        environment:
+          - GDAL_VERSION=master
+
+  gdal30:
+    <<: *common
+    docker:
+      - image: remotepixel/alpine-rasterio:gdal3.0
+        environment:
+          - GDAL_VERSION=3.0.4
+
+  gdal24:
+    <<: *common
+    docker:
+      - image: remotepixel/alpine-rasterio:gdal2.4
+        environment:
+          - GDAL_VERSION=2.4.1
+
+  wheels:
+    docker:
+      - image: circleci/python:3.7.2
+    working_directory: ~/benchmark
+    steps:
+      - attach_workspace:
+          at: ~/benchmark  
+      - checkout
+      - run: pip install -e .[test] --user
+      - run: |
+          python -m pytest \
+          --benchmark-only \
+          --benchmark-autosave \
+          --benchmark-columns 'min, max, mean, median' \
+          --benchmark-sort 'min' \
+          --benchmark-name 'short' \
+          --benchmark-storage 'reports/' \
+          --benchmark-compare \
+          --benchmark-compare-fail 'min:5%'
+
+    - persist_to_workspace:
+        root: reports/
+        paths:
+          - *
+
+  # compare:
+  #   docker:
+  #     - image: circleci/python:3.7.2
+  #   working_directory: ~/benchmark
+  #   steps:
+  #     - attach_workspace:
+  #         at: ~/benchmark
+  #     - run: pip install pytest-benchmark --user
+  #     - run: pytest-benchmark compare reports/*
+
+workflows:
+  version: 2
+  benchmark:
+    jobs:
+     # - gdalmaster
+     # - gdal30
+     # - gdal24
+      - wheels
